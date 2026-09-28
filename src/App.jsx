@@ -27,23 +27,11 @@ function App() {
   const [interviewHistory, setInterviewHistory] =
     useState(() => loadInterviewHistory());
 
-  /*
-  |--------------------------------------------------------------------------
-  | Start interview
-  |--------------------------------------------------------------------------
-  */
-
   const handleStartInterview = (config) => {
     setInterviewConfig(config);
     setInterviewResult(null);
     setCurrentPage("interview");
   };
-
-  /*
-  |--------------------------------------------------------------------------
-  | Finish interview
-  |--------------------------------------------------------------------------
-  */
 
   const handleFinishInterview = (result) => {
     console.log("Interview completed:", result);
@@ -58,33 +46,14 @@ function App() {
     setCurrentPage("results");
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | Exit interview
-  |--------------------------------------------------------------------------
-  */
-
   const handleExitInterview = () => {
     setCurrentPage("dashboard");
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | Open previous result
-  |--------------------------------------------------------------------------
-  */
-
   const handleViewHistory = (historyItem) => {
     setInterviewResult(historyItem);
-
     setCurrentPage("results");
   };
-
-  /*
-  |--------------------------------------------------------------------------
-  | Delete history item
-  |--------------------------------------------------------------------------
-  */
 
   const handleDeleteHistory = (id) => {
     const updatedHistory =
@@ -93,24 +62,12 @@ function App() {
     setInterviewHistory(updatedHistory);
   };
 
-  /*
-  |--------------------------------------------------------------------------
-  | Clear all history
-  |--------------------------------------------------------------------------
-  */
-
   const handleClearHistory = () => {
     const updatedHistory =
       clearInterviewHistory();
 
     setInterviewHistory(updatedHistory);
   };
-
-  /*
-  |--------------------------------------------------------------------------
-  | Render page
-  |--------------------------------------------------------------------------
-  */
 
   const renderPage = () => {
     switch (currentPage) {
@@ -160,9 +117,11 @@ function App() {
       default:
         return (
           <Dashboard
+            history={interviewHistory}
             onNewInterview={() =>
               setCurrentPage("setup")
             }
+            onViewHistory={handleViewHistory}
           />
         );
     }
