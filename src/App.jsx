@@ -5,6 +5,14 @@ import Dashboard from "./pages/Dashboard";
 import InterviewSetup from "./pages/InterviewSetup";
 import Interview from "./pages/Interview";
 import Results from "./pages/Results";
+import History from "./pages/History";
+
+import {
+  loadInterviewHistory,
+  saveInterviewHistory,
+  deleteInterviewHistory,
+  clearInterviewHistory,
+} from "./services/history";
 
 function App() {
   const [currentPage, setCurrentPage] =
@@ -15,6 +23,9 @@ function App() {
 
   const [interviewResult, setInterviewResult] =
     useState(null);
+
+  const [interviewHistory, setInterviewHistory] =
+    useState(() => loadInterviewHistory());
 
   /*
   |--------------------------------------------------------------------------
@@ -37,6 +48,11 @@ function App() {
   const handleFinishInterview = (result) => {
     console.log("Interview completed:", result);
 
+    const updatedHistory =
+      saveInterviewHistory(result);
+
+    setInterviewHistory(updatedHistory);
+
     setInterviewResult(result);
 
     setCurrentPage("results");
@@ -50,6 +66,44 @@ function App() {
 
   const handleExitInterview = () => {
     setCurrentPage("dashboard");
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Open previous result
+  |--------------------------------------------------------------------------
+  */
+
+  const handleViewHistory = (historyItem) => {
+    setInterviewResult(historyItem);
+
+    setCurrentPage("results");
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Delete history item
+  |--------------------------------------------------------------------------
+  */
+
+  const handleDeleteHistory = (id) => {
+    const updatedHistory =
+      deleteInterviewHistory(id);
+
+    setInterviewHistory(updatedHistory);
+  };
+
+  /*
+  |--------------------------------------------------------------------------
+  | Clear all history
+  |--------------------------------------------------------------------------
+  */
+
+  const handleClearHistory = () => {
+    const updatedHistory =
+      clearInterviewHistory();
+
+    setInterviewHistory(updatedHistory);
   };
 
   /*
@@ -85,6 +139,19 @@ function App() {
             result={interviewResult}
             onDashboard={() =>
               setCurrentPage("dashboard")
+            }
+          />
+        );
+
+      case "history":
+        return (
+          <History
+            history={interviewHistory}
+            onViewResult={handleViewHistory}
+            onDelete={handleDeleteHistory}
+            onClear={handleClearHistory}
+            onNewInterview={() =>
+              setCurrentPage("setup")
             }
           />
         );
